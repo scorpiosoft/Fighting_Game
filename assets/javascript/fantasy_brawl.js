@@ -1,10 +1,10 @@
 // Combatant Object Constructor
 function Combatant(hp, cur_hp, atk, ctr)
 {
-  this.hitpoints = 0;
-  this.cur_hitpoints = 0;
-  this.attack = 0;
-  this.counter = 0;
+  this.hitpoints = hp;
+  this.cur_hitpoints = cur_hp;
+  this.attack = atk;
+  this.counter = ctr;
 };
 
 var barbarian = new Combatant ( 200, 200, 10, 25 );
