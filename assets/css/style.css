@@ -1,7 +1,13 @@
 *
 {
+  color: #331111;
   text-shadow: 1px 1px #ddd;
   font-family: 'Frijole', cursive;
+}
+
+h1
+{
+  font-size: 56px;
 }
 
 progress

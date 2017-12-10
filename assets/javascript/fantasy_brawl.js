@@ -79,9 +79,9 @@ var FantasyBrawl =
 // * give a running combat log
 
 // Model for a Character Card:
-// <div class="card m-1 hero_back" style="width: 18%">
+// <div class="card m-1 hero_back float-left" style="width: 13%">
 //   <div class="card-block">
-//     <h4 class="card-title text-center">Barbarian</h4>
+//     <h5 class="card-title text-center">Barbarian</h4>
 //   </div>
 //   <img class="card-img" src="assets/images/1ABC-barbarian.png" alt="Barbarian">
 //   <div class="card-block">
@@ -92,6 +92,20 @@ var FantasyBrawl =
 
 
 setInterval(FantasyBrawl.change_back(), 5000);
+
+// utility function to flip an image horizontally
+function flip_x(img)
+{
+  // the necessary CSS:
+  // {
+  //       -moz-transform: scaleX(-1);
+  //       -o-transform: scaleX(-1);
+  //       -webkit-transform: scaleX(-1);
+  //       transform: scaleX(-1);
+  //       filter: FlipH;
+  //       -ms-filter: "FlipH";
+  // }
+}
 
 // utility function to delay a little
 function delay()
