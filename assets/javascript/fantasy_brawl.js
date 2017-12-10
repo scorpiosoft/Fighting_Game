@@ -1,9 +1,11 @@
 // Combatant Object Constructor
-function Combatant(hp, cur_hp, atk, ctr)
+function Combatant(name, hp, atk, ctr)
 {
+  this.name = name;
   this.hitpoints = hp;
-  this.cur_hitpoints = cur_hp;
+  this.cur_hitpoints = hp;
   this.attack = atk;
+  this.cur_attack = atk;
   this.counter = ctr;
 };
 
@@ -24,22 +26,37 @@ var FantasyBrawl =
   ],
   // current values in the game
   cur_back:    "",
-  // declare the 4 combatants
-  barbarian:  new Combatant ( 200, 200, 10, 25 ),
-  druid:      new Combatant ( 100, 100, 12, 4 ),
-  fighter:    new Combatant ( 150, 150, 8, 15 ),
-  survivor:   new Combatant ( 250, 250, 6, 6 ),
+  // declare the combatants
+  combatants:
+  {
+    barbarian:  new Combatant ( "Barbarian", 200, 10, 25 ),
+    druid:      new Combatant ( "Druid", 100, 12, 4 ),
+    fighter:    new Combatant ( "Fighter", 150, 8, 15 ),
+    survivor:   new Combatant ( "Survivor", 250, 6, 6 ),
+  },
   // method for changing the background
   change_back: function ()
   {
     this.cur_back = "assets/images/" + this.backgrounds[Math.floor(Math.random() * this.backgrounds.length)];
     this.d_body.css('background-image','url(' + this.cur_back + ')');
   },
+  // method to reset the combatants
+  reset_combatants: function ()
+  {
+    // obj is a convenience variable
+    var obj = this.combatants;
+    for (key in obj)
+    {
+      obj[key].cur_hitpoints = obj[key].hitpoints;
+      obj[key].cur_attack = obj[key].attack;
+    }
+  },
   // method to start a new game
   start_game: function ()
   {
     this.started = true;
     this.change_back();
+    this.reset_combatants();
   },
   // method to end the current game
   end_game: function ()
@@ -50,3 +67,32 @@ var FantasyBrawl =
 };
 
 setInterval(FantasyBrawl.change_back(), 5000);
+
+// utility function to simulate the game for the purposes of picking combatant statistics
+function simulator(hero, e1, e2, e3)
+{
+  console.log(hero, e1);
+  while (e1.cur_hitpoints > 0 && hero.cur_hitpoints > 0)
+  {
+    e1.cur_hitpoints -= hero.cur_attack;
+    hero.cur_attack += hero.attack;
+    hero.cur_hitpoints -= e1.counter;
+    console.log(hero, e1);
+  }
+  console.log(hero, e2);
+  while (e2.cur_hitpoints > 0 && hero.cur_hitpoints > 0)
+  {
+    e2.cur_hitpoints -= hero.cur_attack;
+    hero.cur_attack += hero.attack;
+    hero.cur_hitpoints -= e2.counter;
+    console.log(hero, e2);
+  }
+  console.log(hero, e3);
+  while (e3.cur_hitpoints > 0 && hero.cur_hitpoints > 0)
+  {
+    e3.cur_hitpoints -= hero.cur_attack;
+    hero.cur_attack += hero.attack;
+    hero.cur_hitpoints -= e3.counter;
+    console.log(hero, e3);
+  }
+}
