@@ -15,6 +15,12 @@ progress
   width: 100%;
 }
 
+.instructions
+{
+  font-size: 20px;
+  font-family: 'Archivo Black', sans-serif;
+}
+
 .brawl_back
 {
   background-image: url("../images/castle-2596885_960_720.jpg");

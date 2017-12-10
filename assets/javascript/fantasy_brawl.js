@@ -14,14 +14,15 @@ function Combatant(name, hp, atk, ctr, img)
   this.d_progress = "";
 };
 
-// The Fantasy Brawl Game object
+// The Fantasy Brawl Game Object
 var FantasyBrawl =
 {
   // Is the game started? true/false
-  started:     false,
+  started:      false,
   // DOM elements to update, jQuery handles
-  d_body: $("body"),
-  d_pool: $("#pool"),
+  d_body:       $("body"),
+  d_pool:       $("#pool"),
+  d_combat_log: $("#combat_log"),
   // array of background images
   backgrounds:
   [
@@ -72,7 +73,7 @@ var FantasyBrawl =
   },
   // method to create the combatant cards
   //
-  // Model for a Character Card:
+  // Model for a Combatant Card:
   // <div id="Barbarian_card" class="card m-1 hero_back float-left" style="width: 14%">
   //   <div class="card-block">
   //     <h5 class="card-title text-center">Barbarian</h5>
@@ -95,7 +96,7 @@ var FantasyBrawl =
       var img_id = cur_name + '_img';
       var hp_id = cur_name + '_hp';
       var prog_id = cur_name + '_prog';
-      var card = $('<div id="'+card_id+'" class="card m-1 hero_back float-left" style="width: 14%">'
+      var card = $('<div id="'+card_id+'" class="card m-1 combatant hero_back float-left" style="width: 14%">'
         +'<div class="card-block">'
           +'<h5 class="card-title text-center">'+cur_name+'</h5>'
         +'</div>'
@@ -131,13 +132,18 @@ var FantasyBrawl =
 
 // create the combatant cards
 FantasyBrawl.create_combatants();
-
+// Click event for a Combatant Card
+$(".combatant").on("click", function()
+{
+  console.log("Combatant selected:", this);
+});
 
 //
 // Utility Functions
 //
 
 // utility function to flip an image horizontally
+// takes a jQuery DOM handle as a parameter
 function flip_x(img)
 {
   img.css('-moz-transform','scaleX(-1)');
@@ -149,6 +155,7 @@ function flip_x(img)
 }
 
 // utility function to reset an image horizontally
+// takes a jQuery DOM handle as a parameter
 function reset_x(img)
 {
   img.css('-moz-transform','none');
