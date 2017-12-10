@@ -26,14 +26,17 @@
     </div>
   </header>
 
-  <!-- New Game Combatant Pool / Enemy Pool -->
-  <!-- Combat Zone -->
-    <!-- Hero -->
-    <!-- Enemy -->
-    <!-- Begin Combat Button -->
-  <!-- Combat Log -->
-
-<div class="card m-1 hero_back float-left" style="width: 13%">
+  <div class="container-fluid">
+    <!-- New Game Combatant Pool / Enemy Pool -->
+    <div class="row">
+      <div class="col">
+        <h3>Combatabt Pool</h3>
+      </div>
+    </div>
+    <!-- actual combatant cards -->
+    <div class="row">
+      <div id="pool" class="col">
+<div class="card m-1 hero_back float-left" style="width: 14%">
   <div class="card-block">
     <h5 class="card-title text-center">Barbarian</h4>
   </div>
@@ -43,7 +46,7 @@
   </div>
   <progress value="70" max="200"></progress>
 </div>
-<div class="card m-1 hero_back float-left" style="width: 13%">
+<div class="card m-1 hero_back float-left" style="width: 14%">
   <div class="card-block">
     <h5 class="card-title text-center">Druid</h4>
   </div>
@@ -53,7 +56,7 @@
   </div>
   <progress value="70" max="100"></progress>
 </div>
-<div class="card m-1 hero_back float-left" style="width: 13%">
+<div class="card m-1 hero_back float-left" style="width: 14%">
   <div class="card-block">
     <h5 class="card-title text-center">Fighter</h4>
   </div>
@@ -63,7 +66,7 @@
   </div>
   <progress value="70" max="150"></progress>
 </div>
-<div class="card m-1 hero_back float-left" style="width: 13%">
+<div class="card m-1 hero_back float-left" style="width: 14%">
   <div class="card-block">
     <h5 class="card-title text-center">Survivor</h4>
   </div>
@@ -73,6 +76,33 @@
   </div>
   <progress value="70" max="250"></progress>
 </div>
+      </div>
+    </div>
+    <!-- Combat Zone -->
+    <div class="row">
+      <div class="col">
+        <h3>Combat Zone</h3>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Hero float-left -->
+      <!-- Enemy float-right-->
+      <div class="col">
+      </div>
+      <!-- Begin Combat Button -->
+    </div>
+    <!-- Combat Log -->
+    <div class="row">
+      <div class="col">
+        <h3>Combat Log</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div id="combat_log" class="col">
+      </div>
+    </div>
+  </div>
+
 
   <script type="text/javascript" src="assets/javascript/fantasy_brawl.js"></script>
 
