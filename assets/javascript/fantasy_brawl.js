@@ -8,10 +8,10 @@ function Combatant(name, hp, atk, ctr, img)
   this.cur_attack = atk;
   this.counter = ctr;
   this.img = img;
-  this.dom_card = "";
-  this.dom_img = "";
-  this.dom_hp = "";
-  this.dom_progress = "";
+  this.d_card = "";
+  this.d_img = "";
+  this.d_hitpoints = "";
+  this.d_progress = "";
 };
 
 // The Fantasy Brawl Game object
@@ -73,7 +73,7 @@ var FantasyBrawl =
   // method to create the combatant cards
   //
   // Model for a Character Card:
-  // <div id="Barbarian_card" class="card m-1 hero_back float-left" style="width: 13%">
+  // <div id="Barbarian_card" class="card m-1 hero_back float-left" style="width: 14%">
   //   <div class="card-block">
   //     <h5 class="card-title text-center">Barbarian</h5>
   //   </div>
@@ -106,10 +106,10 @@ var FantasyBrawl =
         +'<progress id="'+prog_id+'" value="'+cur_hp+'" max="'+cur_hp+'"></progress>'
       +'</div>');
       this.d_pool.append(card);
-      obj[key].dom_card = $("#"+card_id);
-      obj[key].dom_img = $("#"+img_id);
-      obj[key].dom_hp = $("#"+hp_id);
-      obj[key].dom_progress = $("#"+prog_id);
+      obj[key].d_card = $("#"+card_id);
+      obj[key].d_img = $("#"+img_id);
+      obj[key].d_hitpoints = $("#"+hp_id);
+      obj[key].d_progress = $("#"+prog_id);
     }
   },
 };
@@ -125,10 +125,17 @@ var FantasyBrawl =
 // * the Attack button does the whole combat with current enemy
 // * give a running combat log
 
+//
+// Main Code
+//
 
-var d_barb = $("#barbarian");
-flip_x(d_barb);
-setInterval(FantasyBrawl.change_backround(), 5000);
+// create the combatant cards
+FantasyBrawl.create_combatants();
+
+
+//
+// Utility Functions
+//
 
 // utility function to flip an image horizontally
 function flip_x(img)
