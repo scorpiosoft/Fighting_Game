@@ -10,6 +10,7 @@ function Combatant(name, hp, atk, ctr, img)
   this.img = img;
   this.dom_card = "";
   this.dom_img = "";
+  this.dom_hp = "";
   this.dom_progress = "";
 };
 
@@ -20,6 +21,7 @@ var FantasyBrawl =
   started:     false,
   // DOM elements to update, jQuery handles
   d_body: $("body"),
+  d_pool: $("#pool"),
   // array of background images
   backgrounds:
   [
@@ -35,8 +37,8 @@ var FantasyBrawl =
   {
     barbarian:  new Combatant ( "Barbarian", 200, 10, 25, "assets/images/1ABC-barbarian.png" ),
     druid:      new Combatant ( "Druid", 100, 12, 6, "assets/images/1ABC-druid.png" ),
-    fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/1ABC-survivor.png" ),
-    survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/man-1923546_960_720.png"),
+    fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/man-1923546_960_720.png" ),
+    survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/1ABC-survivor.png") ,
   },
   // method to start a new game
   start_game: function ()
@@ -73,7 +75,7 @@ var FantasyBrawl =
   // Model for a Character Card:
   // <div id="Barbarian_card" class="card m-1 hero_back float-left" style="width: 13%">
   //   <div class="card-block">
-  //     <h5 class="card-title text-center">Barbarian</h4>
+  //     <h5 class="card-title text-center">Barbarian</h5>
   //   </div>
   //   <img id="Barbarian_img" class="card-img" src="assets/images/1ABC-barbarian.png" alt="Barbarian">
   //   <div class="card-block">
@@ -87,8 +89,29 @@ var FantasyBrawl =
     var obj = this.combatants;
     for (key in obj)
     {
-    }    
-  }
+      var cur_name = obj[key].name;
+      var cur_hp = obj[key].hitpoints;
+      var card_id = cur_name + '_card';
+      var img_id = cur_name + '_img';
+      var hp_id = cur_name + '_hp';
+      var prog_id = cur_name + '_prog';
+      var card = $('<div id="'+card_id+'" class="card m-1 hero_back float-left" style="width: 14%">'
+        +'<div class="card-block">'
+          +'<h5 class="card-title text-center">'+cur_name+'</h5>'
+        +'</div>'
+        +'<img id="'+img_id+'" class="card-img" src="'+obj[key].img+'" alt="'+cur_name+'">'
+        +'<div class="card-block">'
+          +'<p id="'+hp_id+'" class="card-text text-center">'+cur_hp+'</p>'
+        +'</div>'
+        +'<progress id="'+prog_id+'" value="'+cur_hp+'" max="'+cur_hp+'"></progress>'
+      +'</div>');
+      this.d_pool.append(card);
+      obj[key].dom_card = $("#"+card_id);
+      obj[key].dom_img = $("#"+img_id);
+      obj[key].dom_hp = $("#"+hp_id);
+      obj[key].dom_progress = $("#"+prog_id);
+    }
+  },
 };
 
 // The Plan:
