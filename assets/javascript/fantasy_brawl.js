@@ -1,5 +1,5 @@
 // Combatant Object Constructor
-function Combatant(name, hp, atk, ctr)
+function Combatant(name, hp, atk, ctr, img)
 {
   this.name = name;
   this.hitpoints = hp;
@@ -7,6 +7,10 @@ function Combatant(name, hp, atk, ctr)
   this.attack = atk;
   this.cur_attack = atk;
   this.counter = ctr;
+  this.img = img;
+  this.dom_card = "";
+  this.dom_img = "";
+  this.dom_progress = "";
 };
 
 // The Fantasy Brawl Game object
@@ -29,16 +33,16 @@ var FantasyBrawl =
   // declare the combatants
   combatants:
   {
-    barbarian:  new Combatant ( "Barbarian", 200, 10, 25 ),
-    druid:      new Combatant ( "Druid", 100, 12, 6 ),
-    fighter:    new Combatant ( "Fighter", 150, 8, 15 ),
-    survivor:   new Combatant ( "Survivor", 250, 6, 6 ),
+    barbarian:  new Combatant ( "Barbarian", 200, 10, 25, "assets/images/1ABC-barbarian.png" ),
+    druid:      new Combatant ( "Druid", 100, 12, 6, "assets/images/1ABC-druid.png" ),
+    fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/1ABC-survivor.png" ),
+    survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/man-1923546_960_720.png"),
   },
   // method to start a new game
   start_game: function ()
   {
     this.started = true;
-    this.change_back();
+    this.change_backround();
     this.reset_combatants();
   },
   // method to end the current game
@@ -48,7 +52,7 @@ var FantasyBrawl =
     this.d_message.text("Pick a character to start.");
   },
   // method for changing the background
-  change_back: function ()
+  change_backround: function ()
   {
     this.cur_back = "assets/images/" + this.backgrounds[Math.floor(Math.random() * this.backgrounds.length)];
     this.d_body.css('background-image','url(' + this.cur_back + ')');
@@ -64,7 +68,27 @@ var FantasyBrawl =
       obj[key].cur_attack = obj[key].attack;
     }
   },
-  // 
+  // method to create the combatant cards
+  //
+  // Model for a Character Card:
+  // <div id="Barbarian_card" class="card m-1 hero_back float-left" style="width: 13%">
+  //   <div class="card-block">
+  //     <h5 class="card-title text-center">Barbarian</h4>
+  //   </div>
+  //   <img id="Barbarian_img" class="card-img" src="assets/images/1ABC-barbarian.png" alt="Barbarian">
+  //   <div class="card-block">
+  //     <p class="card-text text-center">200</p>
+  //   </div>
+  //   <progress id="Barbarian_prog" value="70" max="200"></progress>
+  // </div>
+  create_combatants: function ()
+  {
+    // obj is a convenience variable
+    var obj = this.combatants;
+    for (key in obj)
+    {
+    }    
+  }
 };
 
 // The Plan:
@@ -78,37 +102,41 @@ var FantasyBrawl =
 // * the Attack button does the whole combat with current enemy
 // * give a running combat log
 
-// Model for a Character Card:
-// <div class="card m-1 hero_back float-left" style="width: 13%">
-//   <div class="card-block">
-//     <h5 class="card-title text-center">Barbarian</h4>
-//   </div>
-//   <img class="card-img" src="assets/images/1ABC-barbarian.png" alt="Barbarian">
-//   <div class="card-block">
-//     <p class="card-text text-center">200</p>
-//   </div>
-//   <progress value="70" max="200"></progress>
-// </div>
 
-
-setInterval(FantasyBrawl.change_back(), 5000);
+var d_barb = $("#barbarian");
+flip_x(d_barb);
+setInterval(FantasyBrawl.change_backround(), 5000);
 
 // utility function to flip an image horizontally
 function flip_x(img)
 {
-  // the necessary CSS:
-  // {
-  //       -moz-transform: scaleX(-1);
-  //       -o-transform: scaleX(-1);
-  //       -webkit-transform: scaleX(-1);
-  //       transform: scaleX(-1);
-  //       filter: FlipH;
-  //       -ms-filter: "FlipH";
-  // }
+  img.css('-moz-transform','scaleX(-1)');
+  img.css('-o-transform','scaleX(-1)');
+  img.css('-webkit-transform','scaleX(-1)');
+  img.css('transform','scaleX(-1)');
+  img.css('filter','FlipH');
+  img.css('-ms-filter','"FlipH"');
+}
+
+// utility function to reset an image horizontally
+function reset_x(img)
+{
+  img.css('-moz-transform','none');
+  img.css('-o-transform','none');
+  img.css('-webkit-transform','none');
+  img.css('transform','none');
+  img.css('filter','none');
+  img.css('-ms-filter','none');
 }
 
 // utility function to delay a little
-function delay()
+function short_delay()
+{
+  setTimeout(null, 100); // 100 ms == 1/10 second
+}
+
+// utility function to delay longer
+function long_delay()
 {
   setTimeout(null, 400); // 400 ms == 2/5 second
 }
