@@ -79,7 +79,7 @@ var FantasyBrawl =
 // * give a running combat log
 
 // Model for a Character Card:
-// <div class="card m-1 hero_back" style="width: 15%">
+// <div class="card m-1 hero_back" style="width: 18%">
 //   <div class="card-block">
 //     <h4 class="card-title text-center">Barbarian</h4>
 //   </div>
