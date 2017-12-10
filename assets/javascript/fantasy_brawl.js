@@ -30,9 +30,22 @@ var FantasyBrawl =
   combatants:
   {
     barbarian:  new Combatant ( "Barbarian", 200, 10, 25 ),
-    druid:      new Combatant ( "Druid", 100, 12, 4 ),
+    druid:      new Combatant ( "Druid", 100, 12, 6 ),
     fighter:    new Combatant ( "Fighter", 150, 8, 15 ),
     survivor:   new Combatant ( "Survivor", 250, 6, 6 ),
+  },
+  // method to start a new game
+  start_game: function ()
+  {
+    this.started = true;
+    this.change_back();
+    this.reset_combatants();
+  },
+  // method to end the current game
+  end_game: function ()
+  {
+    this.started = false;
+    this.d_message.text("Pick a character to start.");
   },
   // method for changing the background
   change_back: function ()
@@ -51,22 +64,40 @@ var FantasyBrawl =
       obj[key].cur_attack = obj[key].attack;
     }
   },
-  // method to start a new game
-  start_game: function ()
-  {
-    this.started = true;
-    this.change_back();
-    this.reset_combatants();
-  },
-  // method to end the current game
-  end_game: function ()
-  {
-    this.started = false;
-    this.d_message.text("Pick a character to start.");
-  },
+  // 
 };
 
+// The Plan:
+// * make a card for combatant display
+// * * Name
+// * * png
+// * * hitpoints
+// * * reverse progress bar of hitpoints
+// * * background alpha channel for hero/enemy
+// * animate the png when it attacks, forward, and back; jrpg style
+// * the Attack button does the whole combat with current enemy
+// * give a running combat log
+
+// Model for a Character Card:
+// <div class="card m-1 hero_back" style="width: 15%">
+//   <div class="card-block">
+//     <h4 class="card-title text-center">Barbarian</h4>
+//   </div>
+//   <img class="card-img" src="assets/images/1ABC-barbarian.png" alt="Barbarian">
+//   <div class="card-block">
+//     <p class="card-text text-center">200</p>
+//   </div>
+//   <progress value="70" max="200"></progress>
+// </div>
+
+
 setInterval(FantasyBrawl.change_back(), 5000);
+
+// utility function to delay a little
+function delay()
+{
+  setTimeout(null, 400); // 400 ms == 2/5 second
+}
 
 // utility function to simulate the game for the purposes of picking combatant statistics
 function simulator(hero, e1, e2, e3)
