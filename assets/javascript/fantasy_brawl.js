@@ -203,12 +203,12 @@ var FantasyBrawl =
       cbt.d_progress = $("#"+prog_id);
     }
   },
-  // method to create the [Duel] button
+  // method to create the [Attack] button
   //
   // <button type="button" onclick="alert('Hello world!')">Click Me!</button>
   create_button: function ()
   {
-    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Attack</buton>');
+    var button = $('<button id="attack" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Attack</button>');
     this.d_combat_header.append(button);
   },
 };
@@ -219,7 +219,7 @@ var FantasyBrawl =
 
 // create the combatant cards
 FantasyBrawl.create_combatants();
-// create the [Duel] button
+// create the [Attack] button
 FantasyBrawl.create_button();
 
 //
@@ -261,8 +261,8 @@ $(".combatant").on("click", function()
   // else throw the click away
 });
 
-// Click event for the [Duel] Button
-$("#button").on("click", function()
+// Click event for the [Attack] Button
+$("#attack").on("click", function()
 {
   if (FantasyBrawl.started && FantasyBrawl.have_enemy)
     FantasyBrawl.attack();
