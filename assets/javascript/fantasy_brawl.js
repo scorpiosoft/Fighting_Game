@@ -93,8 +93,13 @@ var FantasyBrawl =
       console.log(this.cur_hero, this.cur_enemy);
       msg = $('<p class="log">'+this.cur_hero.name+' hits '+this.cur_enemy.name+' for '+this.cur_hero.cur_attack+'</p>');
       this.d_combat_log.prepend(msg);
+      // make adjustments to the object
       this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
       this.cur_hero.cur_attack += this.cur_hero.attack;
+      // make adjustments to the display
+      this.cur_enemy.d_hitpoints.text(this.cur_enemy.cur_hitpoints);
+      this.cur_enemy.d_progress.val(this.cur_enemy.cur_hitpoints);
+
 
       // NOTE:  JS/jQ do not have great facilities for scheduling animations.
       //        I've tried to pick delay times for the animations that seem
@@ -113,7 +118,11 @@ var FantasyBrawl =
       {
         msg = $('<p class="log">'+this.cur_enemy.name+' hits '+this.cur_hero.name+' for '+this.cur_enemy.counter+'</p>');
         this.d_combat_log.prepend(msg);
+        // make adjustments to the object
         this.cur_hero.cur_hitpoints -= this.cur_enemy.counter;
+        // make adjustments to the display
+        this.cur_hero.d_hitpoints.text(this.cur_hero.cur_hitpoints);
+        this.cur_hero.d_progress.val(this.cur_hero.cur_hitpoints);
         // animate the enemy
         this.cur_enemy.d_card.delay(800).animate({ left: "-="+shift }, "fast");
         this.cur_enemy.d_card.delay(400).animate({ left: "+="+shift });
