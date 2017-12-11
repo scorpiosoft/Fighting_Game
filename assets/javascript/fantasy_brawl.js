@@ -46,6 +46,8 @@ var FantasyBrawl =
     Druid:      new Combatant ( "Druid", 100, 12, 50, "assets/images/1ABC-druid.png" ),
     Fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/man-1923546_960_720.png" ),
     Survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/1ABC-survivor.png") ,
+    // NOTE:  I know the 1ABC images are too translucent, not enough time to find and
+    //        resize new images.
   },
   // method to start a new game
   start_game: function ()
@@ -236,7 +238,7 @@ $(".combatant").on("click", function()
     console.log("setting " + this.id + " as the hero");
     FantasyBrawl.start_game();
     FantasyBrawl.cur_hero = FantasyBrawl.combatants[this.id];
-    // move the hero to the Cpmbat Zone
+    // move the hero to the Combat Zone
     FantasyBrawl.d_combat_zone.append(this);
     // set the other combatants as enemies and move them right
     for ( key in FantasyBrawl.combatants )
@@ -253,7 +255,6 @@ $(".combatant").on("click", function()
   if (FantasyBrawl.have_enemy === false)
   {
     console.log("setting " + this.id + " as the enemy");
-    // FantasyBrawl.d_combat_zone.append(FantasyBrawl.combatants.survivor.d_card); // this code works
     FantasyBrawl.d_combat_zone.append(this);
     FantasyBrawl.have_enemy = true;
     FantasyBrawl.cur_enemy = FantasyBrawl.combatants[this.id];
@@ -272,11 +273,14 @@ $("#attack").on("click", function()
 // Key-Up event function
 document.onkeyup = function(event)
 {
+  // the only reason for this function is to reset for a new game,
+  // without actually starting the new game
   if (FantasyBrawl.started === false)
   {
     FantasyBrawl.reset_combatants();
     FantasyBrawl.d_combat_log.empty();
   }
+  // else throw away key presses
 }
 
 //
@@ -307,14 +311,14 @@ function reset_x(img)
   img.css('-ms-filter','none');
 }
 
-// utility function to returning the number of pixels that are the passed in percentage of the viewport height
+// utility function for returning the number of pixels that are the passed in percentage of the viewport height
 function vh(v)
 {
   var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
   return (v * h) / 100;
 }
 
-// utility function to returning the number of pixels that are the passed in percentage of the viewport width
+// utility function for returning the number of pixels that are the passed in percentage of the viewport width
 function vw(v)
 {
   var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
