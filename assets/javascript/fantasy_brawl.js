@@ -19,6 +19,7 @@ var FantasyBrawl =
 {
   // Is the game started? true/false
   started:      false,
+  have_enemy:   false,
   // DOM elements to update, jQuery handles
   d_body:        $("body"),
   d_pool:        $("#pool"),
@@ -33,19 +34,22 @@ var FantasyBrawl =
     "unicorn-2674743_960_720.jpg",
   ],
   // current values in the game
-  cur_back:    "",
+  cur_back:     "",
+  cur_enemy:    null,
   // declare the combatants
   combatants:
-  {
-    barbarian:  new Combatant ( "Barbarian", 200, 10, 25, "assets/images/1ABC-barbarian.png" ),
-    druid:      new Combatant ( "Druid", 100, 12, 6, "assets/images/1ABC-druid.png" ),
-    fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/man-1923546_960_720.png" ),
-    survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/1ABC-survivor.png") ,
+  { // combatant keynames are capitalized to make selection easier
+    Barbarian:  new Combatant ( "Barbarian", 200, 10, 25, "assets/images/1ABC-barbarian.png" ),
+    Druid:      new Combatant ( "Druid", 100, 12, 6, "assets/images/1ABC-druid.png" ),
+    Fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/man-1923546_960_720.png" ),
+    Survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/1ABC-survivor.png") ,
   },
   // method to start a new game
   start_game: function ()
   {
     this.started = true;
+    this.have_enemy = false;
+    this.cur_enemy = null;
     this.change_backround();
     this.reset_combatants();
   },
@@ -70,6 +74,7 @@ var FantasyBrawl =
     {
       obj[key].cur_hitpoints = obj[key].hitpoints;
       obj[key].cur_attack = obj[key].attack;
+      reset_x(obj[key].d_img);
     }
   },
   // method to create the combatant cards
@@ -153,9 +158,20 @@ $(".combatant").on("click", function()
       {
         FantasyBrawl.combatants[key].d_card.removeClass("hero_back float-left");
         FantasyBrawl.combatants[key].d_card.addClass("enemy_back float-right");
+      } else {
+        flip_x(FantasyBrawl.combatants[key].d_img);
       }
     }
+  } else
+  if (FantasyBrawl.have_enemy === false)
+  {
+    console.log("setting " + this.id + " as the enemy");
+    // FantasyBrawl.d_combat_zone.append(FantasyBrawl.combatants.survivor.d_card); // this code works
+    FantasyBrawl.d_combat_zone.append(this);
+    FantasyBrawl.have_enemy = true;
+    FantasyBrawl.cur_enemy = FantasyBrawl.combatants[this.id];
   }
+  // else throw the click away
 });
 
 //
