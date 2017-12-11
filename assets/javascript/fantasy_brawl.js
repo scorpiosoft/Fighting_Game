@@ -18,13 +18,14 @@ function Combatant(name, hp, atk, ctr, img)
 var FantasyBrawl =
 {
   // Is the game started? true/false
-  started:      false,
-  have_enemy:   false,
+  started:         false,
+  have_enemy:      false,
   // DOM elements to update, jQuery handles
-  d_body:        $("body"),
-  d_pool:        $("#pool"),
-  d_combat_zone: $("#combat_zone"),
-  d_combat_log:  $("#combat_log"),
+  d_body:          $("body"),
+  d_pool:          $("#pool"),
+  d_combat_header: $("#combat_header"),
+  d_combat_zone:   $("#combat_zone"),
+  d_combat_log:    $("#combat_log"),
   // array of background images
   backgrounds:
   [
@@ -35,6 +36,7 @@ var FantasyBrawl =
   ],
   // current values in the game
   cur_back:     "",
+  cur_hero:     null,
   cur_enemy:    null,
   // declare the combatants
   combatants:
@@ -49,6 +51,7 @@ var FantasyBrawl =
   {
     this.started = true;
     this.have_enemy = false;
+    this.cur_hero = null;
     this.cur_enemy = null;
     this.change_backround();
     this.reset_combatants();
@@ -75,6 +78,21 @@ var FantasyBrawl =
       obj[key].cur_hitpoints = obj[key].hitpoints;
       obj[key].cur_attack = obj[key].attack;
       reset_x(obj[key].d_img);
+    }
+  },
+  duel: function ()
+  {
+    // double sanity protection (I know I checked in the on-click already)
+    if (this.started && this.have_enemy)
+    {
+      console.log(this.cur_hero, this.cur_enemy);
+      while (this.cur_enemy.cur_hitpoints > 0 && this.cur_hero.cur_hitpoints > 0)
+      {
+        this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
+        this.cur_hero.cur_attack += this.cur_hero.attack;
+        this.cur_hero.cur_hitpoints -= this.cur_enemy.counter;
+        console.log(this.cur_hero, this.cur_enemy);
+      }
     }
   },
   // method to create the combatant cards
@@ -119,6 +137,14 @@ var FantasyBrawl =
       obj[key].d_progress = $("#"+prog_id);
     }
   },
+  // method to create the [Duel] button
+  //
+  // <button type="button" onclick="alert('Hello world!')">Click Me!</button>
+  create_button: function ()
+  {
+    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle float-left" type="button">Duel</buton>');
+    this.d_combat_header.append(button);
+  },
 };
 
 // The Plan:
@@ -138,17 +164,23 @@ var FantasyBrawl =
 
 // create the combatant cards
 FantasyBrawl.create_combatants();
+// create the [Duel] button
+FantasyBrawl.create_button();
+
+//
+// Event Functions
+//
+
 // Click event for a Combatant Card
-var card; // debug TODO delete this line
 $(".combatant").on("click", function()
 {
-  card = this; // TODO delete this line
   console.log("Combatant selected:", this);
   // selecting a hero starts the game, if the game is not started, make the selection the hero
   if (FantasyBrawl.started === false)
   {
     console.log("setting " + this.id + " as the hero");
     FantasyBrawl.start_game();
+    FantasyBrawl.cur_hero = FantasyBrawl.combatants[this.id];
     // move the hero to the Cpmbat Zone
     FantasyBrawl.d_combat_zone.append(this);
     // set the other combatants as enemies and move them right
@@ -172,6 +204,14 @@ $(".combatant").on("click", function()
     FantasyBrawl.cur_enemy = FantasyBrawl.combatants[this.id];
   }
   // else throw the click away
+});
+
+// Click event for the [Duel] Button
+$("#button").on("click", function()
+{
+  if (FantasyBrawl.started && FantasyBrawl.have_enemy)
+    FantasyBrawl.duel();
+  // else throw away the clicks
 });
 
 //
