@@ -59,8 +59,10 @@ var FantasyBrawl =
   // method to end the current game
   end_game: function ()
   {
+    var msg;
     this.started = false;
-    this.d_message.text("Pick a character to start.");
+    msg = $('<p>Pick a character to play again.</p>');
+    this.d_combat_log.prepend(msg);
   },
   // method for changing the background
   change_backround: function ()
@@ -82,14 +84,19 @@ var FantasyBrawl =
   },
   duel: function ()
   {
+    var msg;
     // double sanity protection (I know I checked in the on-click already)
     if (this.started && this.have_enemy)
     {
       console.log(this.cur_hero, this.cur_enemy);
       while (this.cur_enemy.cur_hitpoints > 0 && this.cur_hero.cur_hitpoints > 0)
       {
+        msg = $('<p class="log">'+this.cur_hero.name+' hits '+this.cur_enemy.name+' for '+this.cur_hero.cur_attack+'</p>');
+        this.d_combat_log.prepend(msg);
         this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
         this.cur_hero.cur_attack += this.cur_hero.attack;
+        msg = $('<p class="log">'+this.cur_enemy.name+' hits '+this.cur_hero.name+' for '+this.cur_enemy.counter+'</p>');
+        this.d_combat_log.prepend(msg);
         this.cur_hero.cur_hitpoints -= this.cur_enemy.counter;
         console.log(this.cur_hero, this.cur_enemy);
       }
@@ -142,7 +149,7 @@ var FantasyBrawl =
   // <button type="button" onclick="alert('Hello world!')">Click Me!</button>
   create_button: function ()
   {
-    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle float-left" type="button">Duel</buton>');
+    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Duel</buton>');
     this.d_combat_header.append(button);
   },
 };
