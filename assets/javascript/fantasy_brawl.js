@@ -20,9 +20,10 @@ var FantasyBrawl =
   // Is the game started? true/false
   started:      false,
   // DOM elements to update, jQuery handles
-  d_body:       $("body"),
-  d_pool:       $("#pool"),
-  d_combat_log: $("#combat_log"),
+  d_body:        $("body"),
+  d_pool:        $("#pool"),
+  d_combat_zone: $("#combat_zone"),
+  d_combat_log:  $("#combat_log"),
   // array of background images
   backgrounds:
   [
@@ -92,7 +93,7 @@ var FantasyBrawl =
     {
       var cur_name = obj[key].name;
       var cur_hp = obj[key].hitpoints;
-      var card_id = cur_name + '_card';
+      var card_id = cur_name;
       var img_id = cur_name + '_img';
       var hp_id = cur_name + '_hp';
       var prog_id = cur_name + '_prog';
@@ -133,9 +134,28 @@ var FantasyBrawl =
 // create the combatant cards
 FantasyBrawl.create_combatants();
 // Click event for a Combatant Card
+var card; // debug TODO delete this line
 $(".combatant").on("click", function()
 {
+  card = this; // TODO delete this line
   console.log("Combatant selected:", this);
+  // selecting a hero starts the game, if the game is not started, make the selection the hero
+  if (FantasyBrawl.started === false)
+  {
+    console.log("setting " + this.id + " as the hero");
+    FantasyBrawl.start_game();
+    // move the hero to the Cpmbat Zone
+    FantasyBrawl.d_combat_zone.append(this);
+    // set the other combatants as enemies and move them right
+    for ( key in FantasyBrawl.combatants )
+    {
+      if (FantasyBrawl.combatants[key].name !== this.id)
+      {
+        FantasyBrawl.combatants[key].d_card.removeClass("hero_back float-left");
+        FantasyBrawl.combatants[key].d_card.addClass("enemy_back float-right");
+      }
+    }
+  }
 });
 
 //
