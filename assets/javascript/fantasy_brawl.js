@@ -38,11 +38,12 @@ var FantasyBrawl =
   cur_back:     "",
   cur_hero:     null,
   cur_enemy:    null,
+  cur_defeated: 0,
   // declare the combatants
   combatants:
   { // combatant keynames are capitalized to make selection easier
-    Barbarian:  new Combatant ( "Barbarian", 200, 10, 25, "assets/images/1ABC-barbarian.png" ),
-    Druid:      new Combatant ( "Druid", 100, 12, 6, "assets/images/1ABC-druid.png" ),
+    Barbarian:  new Combatant ( "Barbarian", 200, 9, 25, "assets/images/1ABC-barbarian.png" ),
+    Druid:      new Combatant ( "Druid", 100, 12, 50, "assets/images/1ABC-druid.png" ),
     Fighter:    new Combatant ( "Fighter", 150, 8, 15, "assets/images/man-1923546_960_720.png" ),
     Survivor:   new Combatant ( "Survivor", 250, 6, 6 , "assets/images/1ABC-survivor.png") ,
   },
@@ -53,17 +54,23 @@ var FantasyBrawl =
     this.have_enemy = false;
     this.cur_hero = null;
     this.cur_enemy = null;
+    this.cur_defeated = 0;
     this.change_backround();
     this.reset_combatants();
     this.d_combat_log.empty();
   },
   // method to end the current game
-  end_game: function ()
+  end_game: function (msg)
   {
-    var msg;
+    var d_msg;
     this.started = false;
-    msg = $('<p>Pick a character to play again.</p>');
-    this.d_combat_log.prepend(msg);
+    if (msg.length)
+    {
+      d_msg = $('<p style="font-size: 36px">'+msg+'</p>');
+      this.d_combat_log.prepend(d_msg);
+    }
+    d_msg = $('<p style="font-size: 24px">Press any key to play again.</p>');
+    this.d_combat_log.prepend(d_msg);
   },
   // method for changing the background
   change_backround: function ()
@@ -76,18 +83,25 @@ var FantasyBrawl =
   {
     // obj is a convenience variable
     var obj = this.combatants;
+    var cbt;
     for (key in obj)
     {
-      obj[key].cur_hitpoints = obj[key].hitpoints;
-      obj[key].cur_attack = obj[key].attack;
-      reset_x(obj[key].d_img);
-      this.d_pool.append(obj[key].d_card);
+      cbt = obj[key];
+      cbt.cur_hitpoints = cbt.hitpoints;
+      cbt.cur_attack = cbt.attack;
+      cbt.d_hitpoints.text(cbt.hitpoints);
+      cbt.d_progress.val(cbt.hitpoints);
+      cbt.d_card.removeClass("enemy_back float-right");
+      cbt.d_card.addClass("hero_back float-left");
+      cbt.d_card.show();
+      reset_x(cbt.d_img);
+      this.d_pool.append(cbt.d_card);
     }
   },
   attack: function ()
   {
     var msg;
-    var shift = vw(70);
+    var shift = vw(69);
     // double sanity protection (I know I checked in the on-click already)
     if (this.started && this.have_enemy)
     {
@@ -128,10 +142,22 @@ var FantasyBrawl =
         this.cur_enemy.d_card.delay(800).animate({ left: "-="+shift }, "fast");
         this.cur_enemy.d_card.delay(400).animate({ left: "+="+shift });
       } else {
+        // enemy defeated
         this.cur_enemy.d_card.hide();
         this.have_enemy = false;
+        this.cur_defeated++;
       }
       console.log(this.cur_hero, this.cur_enemy);
+
+      // test for win/lose
+      if (this.cur_defeated >= (Object.keys(this.combatants).length - 1))
+      {
+        this.end_game("Y O U . W I N !");
+      } else
+      if (this.cur_hero.cur_hitpoints <= 0)
+      {
+        this.end_game("G A M E . O V E R");
+      }
     }
   },
   // method to create the combatant cards
@@ -153,8 +179,9 @@ var FantasyBrawl =
     var obj = this.combatants;
     for (key in obj)
     {
-      var cur_name = obj[key].name;
-      var cur_hp = obj[key].hitpoints;
+      cbt = obj[key];
+      var cur_name = cbt.name;
+      var cur_hp = cbt.hitpoints;
       var card_id = cur_name;
       var img_id = cur_name + '_img';
       var hp_id = cur_name + '_hp';
@@ -163,17 +190,17 @@ var FantasyBrawl =
         +'<div class="card-block">'
           +'<h5 class="card-title text-center">'+cur_name+'</h5>'
         +'</div>'
-        +'<img id="'+img_id+'" class="card-img" src="'+obj[key].img+'" alt="'+cur_name+'">'
+        +'<img id="'+img_id+'" class="card-img" src="'+cbt.img+'" alt="'+cur_name+'">'
         +'<div class="card-block">'
           +'<p id="'+hp_id+'" class="card-text text-center">'+cur_hp+'</p>'
         +'</div>'
         +'<progress id="'+prog_id+'" value="'+cur_hp+'" max="'+cur_hp+'"></progress>'
       +'</div>');
       this.d_pool.append(card);
-      obj[key].d_card = $("#"+card_id);
-      obj[key].d_img = $("#"+img_id);
-      obj[key].d_hitpoints = $("#"+hp_id);
-      obj[key].d_progress = $("#"+prog_id);
+      cbt.d_card = $("#"+card_id);
+      cbt.d_img = $("#"+img_id);
+      cbt.d_hitpoints = $("#"+hp_id);
+      cbt.d_progress = $("#"+prog_id);
     }
   },
   // method to create the [Duel] button
@@ -241,6 +268,16 @@ $("#button").on("click", function()
     FantasyBrawl.attack();
   // else throw away the clicks
 });
+
+// Key-Up event function
+document.onkeyup = function(event)
+{
+  if (FantasyBrawl.started === false)
+  {
+    FantasyBrawl.reset_combatants();
+    FantasyBrawl.d_combat_log.empty();
+  }
+}
 
 //
 // Utility Functions
