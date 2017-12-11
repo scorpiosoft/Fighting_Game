@@ -55,7 +55,7 @@ var FantasyBrawl =
     this.cur_enemy = null;
     this.change_backround();
     this.reset_combatants();
-    this.combat_log.empty();
+    this.d_combat_log.empty();
   },
   // method to end the current game
   end_game: function ()
