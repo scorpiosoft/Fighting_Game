@@ -80,26 +80,48 @@ var FantasyBrawl =
       obj[key].cur_hitpoints = obj[key].hitpoints;
       obj[key].cur_attack = obj[key].attack;
       reset_x(obj[key].d_img);
+      this.d_pool.append(obj[key].d_card);
     }
   },
-  duel: function ()
+  attack: function ()
   {
     var msg;
+    var shift = vw(70);
     // double sanity protection (I know I checked in the on-click already)
     if (this.started && this.have_enemy)
     {
       console.log(this.cur_hero, this.cur_enemy);
-      while (this.cur_enemy.cur_hitpoints > 0 && this.cur_hero.cur_hitpoints > 0)
+      msg = $('<p class="log">'+this.cur_hero.name+' hits '+this.cur_enemy.name+' for '+this.cur_hero.cur_attack+'</p>');
+      this.d_combat_log.prepend(msg);
+      this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
+      this.cur_hero.cur_attack += this.cur_hero.attack;
+
+      // NOTE:  JS/jQ do not have great facilities for scheduling animations.
+      //        I've tried to pick delay times for the animations that seem
+      //        OK, but the fact that JS tries really hard to make everything
+      //        asynchronous makes a smooth looking animated game really hard
+      //        and I don't feel it's worth it to sink a lot of time into
+      //        researching animation timings and forced delay to the rest of
+      //        the JS code.
+
+      // animate the hero
+      this.cur_hero.d_card.animate({ left: "+="+shift }, "fast");
+      this.cur_hero.d_card.delay(200).animate({ left: "-="+shift });
+
+      // check if the enemy is KO'd and hide it or attack with it
+      if (this.cur_enemy.cur_hitpoints > 0)
       {
-        msg = $('<p class="log">'+this.cur_hero.name+' hits '+this.cur_enemy.name+' for '+this.cur_hero.cur_attack+'</p>');
-        this.d_combat_log.prepend(msg);
-        this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
-        this.cur_hero.cur_attack += this.cur_hero.attack;
         msg = $('<p class="log">'+this.cur_enemy.name+' hits '+this.cur_hero.name+' for '+this.cur_enemy.counter+'</p>');
         this.d_combat_log.prepend(msg);
         this.cur_hero.cur_hitpoints -= this.cur_enemy.counter;
-        console.log(this.cur_hero, this.cur_enemy);
+        // animate the enemy
+        this.cur_enemy.d_card.delay(800).animate({ left: "-="+shift }, "fast");
+        this.cur_enemy.d_card.delay(400).animate({ left: "+="+shift });
+      } else {
+        this.cur_enemy.d_card.hide();
+        this.have_enemy = false;
       }
+      console.log(this.cur_hero, this.cur_enemy);
     }
   },
   // method to create the combatant cards
@@ -149,21 +171,10 @@ var FantasyBrawl =
   // <button type="button" onclick="alert('Hello world!')">Click Me!</button>
   create_button: function ()
   {
-    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Duel</buton>');
+    var button = $('<button id="button" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Attack</buton>');
     this.d_combat_header.append(button);
   },
 };
-
-// The Plan:
-// * make a card for combatant display
-// * * Name
-// * * png
-// * * hitpoints
-// * * reverse progress bar of hitpoints
-// * * background alpha channel for hero/enemy
-// * animate the png when it attacks, forward, and back; jrpg style
-// * the Attack button does the whole combat with current enemy
-// * give a running combat log
 
 //
 // Main Code
@@ -217,7 +228,7 @@ $(".combatant").on("click", function()
 $("#button").on("click", function()
 {
   if (FantasyBrawl.started && FantasyBrawl.have_enemy)
-    FantasyBrawl.duel();
+    FantasyBrawl.attack();
   // else throw away the clicks
 });
 
@@ -249,17 +260,45 @@ function reset_x(img)
   img.css('-ms-filter','none');
 }
 
-// utility function to delay a little
-function short_delay()
+// utility function to returning the number of pixels that are the passed in percentage of the viewport height
+function vh(v)
 {
-  setTimeout(null, 100); // 100 ms == 1/10 second
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  return (v * h) / 100;
 }
 
-// utility function to delay longer
-function long_delay()
+// utility function to returning the number of pixels that are the passed in percentage of the viewport width
+function vw(v)
 {
-  setTimeout(null, 400); // 400 ms == 2/5 second
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  return (v * w) / 100;
 }
+
+// NOTE: This forced sleep does not work right with the jQ animations
+// // utility function to sleep
+// function sleep(milliseconds)
+// {
+//   var start = new Date().getTime();
+//   for (var i = 0; i < 1e7; i++)
+//   {
+//     if ((new Date().getTime() - start) > milliseconds){
+//       break;
+//     }
+//   }
+// }
+
+// NOTE: setTimeout and setInterval are both asynchronous, so do not work as a sleep
+// // utility function to delay a little
+// function short_delay(callback)
+// {
+//   setTimeout(callback, 100); // 100 ms == 1/10 second
+// }
+
+// // utility function to delay longer
+// function long_delay(callback)
+// {
+//   setTimeout(callback, 400); // 400 ms == 2/5 second
+// }
 
 // utility function to simulate the game for the purposes of picking combatant statistics
 function simulator(hero, e1, e2, e3)
