@@ -66,11 +66,13 @@ var FantasyBrawl =
   {
     var d_msg;
     this.started = false;
+    // display 'YOU WIN' or 'GAME OVER' (passed in)
     if (msg.length)
     {
       d_msg = $('<p style="font-size: 36px">'+msg+'</p>');
       this.d_combat_log.prepend(d_msg);
     }
+    // display instructions to play again
     d_msg = $('<p style="font-size: 24px">Press any key to play again.</p>');
     this.d_combat_log.prepend(d_msg);
   },
@@ -83,12 +85,13 @@ var FantasyBrawl =
   // method to reset the combatants
   reset_combatants: function ()
   {
-    // obj is a convenience variable
+    // convenience variables
     var obj = this.combatants;
     var cbt;
+    // loop through all combatants
     for (key in obj)
     {
-      cbt = obj[key];
+      cbt = obj[key]; // current combatant
       cbt.cur_hitpoints = cbt.hitpoints;
       cbt.cur_attack = cbt.attack;
       cbt.d_hitpoints.text(cbt.hitpoints);
@@ -100,10 +103,11 @@ var FantasyBrawl =
       this.d_pool.append(cbt.d_card);
     }
   },
+  // method to resolve the [Attack] button click
   attack: function ()
   {
     var msg;
-    var shift = vw(69);
+    var shift = vw(69); // calculate number of pixels to shift the animation
     // double sanity protection (I know I checked in the on-click already)
     if (this.started && this.have_enemy)
     {
@@ -122,9 +126,8 @@ var FantasyBrawl =
       //        I've tried to pick delay times for the animations that seem
       //        OK, but the fact that JS tries really hard to make everything
       //        asynchronous makes a smooth looking animated game really hard
-      //        and I don't feel it's worth it to sink a lot of time into
-      //        researching animation timings and forced delay to the rest of
-      //        the JS code.
+      //        and it's worth it to sink a lot of time into researching
+      //        animation timings and forced delay to the rest of the JS code.
 
       // animate the hero
       this.cur_hero.d_card.animate({ left: "+="+shift }, "fast");
@@ -179,15 +182,17 @@ var FantasyBrawl =
   {
     // obj is a convenience variable
     var obj = this.combatants;
+    var cbt;
     for (key in obj)
     {
-      cbt = obj[key];
+      cbt = obj[key]; // current combatatant
       var cur_name = cbt.name;
       var cur_hp = cbt.hitpoints;
       var card_id = cur_name;
       var img_id = cur_name + '_img';
       var hp_id = cur_name + '_hp';
       var prog_id = cur_name + '_prog';
+      // chain all the html needed for the entire card, much easier this way
       var card = $('<div id="'+card_id+'" class="card m-1 combatant hero_back float-left" style="width: 14%">'
         +'<div class="card-block">'
           +'<h5 class="card-title text-center">'+cur_name+'</h5>'
@@ -206,8 +211,6 @@ var FantasyBrawl =
     }
   },
   // method to create the [Attack] button
-  //
-  // <button type="button" onclick="alert('Hello world!')">Click Me!</button>
   create_button: function ()
   {
     var button = $('<button id="attack" class="btn btn-outline-danger btn-lg rounded-circle mt-2 float-left" type="button">Attack</button>');
@@ -245,14 +248,17 @@ $(".combatant").on("click", function()
     {
       if (FantasyBrawl.combatants[key].name !== this.id)
       {
+        // set CSS classes for an enemy
         FantasyBrawl.combatants[key].d_card.removeClass("hero_back float-left");
         FantasyBrawl.combatants[key].d_card.addClass("enemy_back float-right");
       } else {
+        // flip the hero hirizontally
         flip_x(FantasyBrawl.combatants[key].d_img);
       }
     }
-  } else
-  if (FantasyBrawl.have_enemy === false)
+  }
+  // game is underway, make selection the current enemy
+  else if (FantasyBrawl.have_enemy === false)
   {
     console.log("setting " + this.id + " as the enemy");
     FantasyBrawl.d_combat_zone.append(this);
@@ -325,7 +331,7 @@ function vw(v)
   return (v * w) / 100;
 }
 
-// NOTE: This forced sleep does not work right with the jQ animations
+// NOTE:  This forced sleep does not work right with the jQ animations
 // // utility function to sleep
 // function sleep(milliseconds)
 // {
@@ -338,7 +344,7 @@ function vw(v)
 //   }
 // }
 
-// NOTE: setTimeout and setInterval are both asynchronous, so do not work as a sleep
+// NOTE:  setTimeout and setInterval are both asynchronous, so do not work as a sleep
 // // utility function to delay a little
 // function short_delay(callback)
 // {
