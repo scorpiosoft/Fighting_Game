@@ -19,7 +19,10 @@ var FantasyBrawl =
 {
   // Is the game started? true/false
   started:         false,
+  // is an enemy selected?
   have_enemy:      false,
+  // is an attack being resolved?
+  attacking:       false,
   // DOM elements to update, jQuery handles
   d_body:          $("body"),
   d_pool:          $("#pool"),
@@ -107,45 +110,48 @@ var FantasyBrawl =
   attack: function ()
   {
     var msg;
-    var shift = vw(69); // calculate number of pixels to shift the animation
+    var shift = vw(67); // calculate number of pixels to shift the animation
+
+    // prevent the user from getting ahead of the game
+    this.attacking = true;
     // double sanity protection (I know I checked in the on-click already)
     if (this.started && this.have_enemy)
     {
       console.log(this.cur_hero, this.cur_enemy);
-      msg = $('<p class="log">'+this.cur_hero.name+' hits '+this.cur_enemy.name+' for '+this.cur_hero.cur_attack+'</p>');
-      this.d_combat_log.prepend(msg);
       // make adjustments to the object
       this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
       this.cur_hero.cur_attack += this.cur_hero.attack;
-      // make adjustments to the display
-      this.cur_enemy.d_hitpoints.text(this.cur_enemy.cur_hitpoints);
-      this.cur_enemy.d_progress.val(this.cur_enemy.cur_hitpoints);
-
-
-      // NOTE:  JS/jQ do not have great facilities for scheduling animations.
-      //        I've tried to pick delay times for the animations that seem
-      //        OK, but the fact that JS tries really hard to make everything
-      //        asynchronous makes a smooth looking animated game really hard
-      //        and it's worth it to sink a lot of time into researching
-      //        animation timings and forced delay to the rest of the JS code.
-
       // animate the hero
       this.cur_hero.d_card.animate({ left: "+="+shift }, "fast");
       this.cur_hero.d_card.delay(200).animate({ left: "-="+shift });
-
+      // make adjustments to the display
+      setTimeout(function ()
+      {
+        // inside timer functions, cannot use 'this' because JS breaks normal OOP rules and global scope can invade object scope
+        FantasyBrawl.cur_enemy.d_hitpoints.text(FantasyBrawl.cur_enemy.cur_hitpoints);
+        FantasyBrawl.cur_enemy.d_progress.val(FantasyBrawl.cur_enemy.cur_hitpoints);
+        msg = $('<p class="log">'+FantasyBrawl.cur_hero.name+' hits '+FantasyBrawl.cur_enemy.name+' for '+FantasyBrawl.cur_hero.cur_attack+'</p>');
+        FantasyBrawl.d_combat_log.prepend(msg);
+      }, 300);
       // check if the enemy is KO'd and hide it or attack with it
       if (this.cur_enemy.cur_hitpoints > 0)
       {
-        msg = $('<p class="log">'+this.cur_enemy.name+' hits '+this.cur_hero.name+' for '+this.cur_enemy.counter+'</p>');
-        this.d_combat_log.prepend(msg);
         // make adjustments to the object
         this.cur_hero.cur_hitpoints -= this.cur_enemy.counter;
-        // make adjustments to the display
-        this.cur_hero.d_hitpoints.text(this.cur_hero.cur_hitpoints);
-        this.cur_hero.d_progress.val(this.cur_hero.cur_hitpoints);
-        // animate the enemy
-        this.cur_enemy.d_card.delay(800).animate({ left: "-="+shift }, "fast");
-        this.cur_enemy.d_card.delay(400).animate({ left: "+="+shift });
+        setTimeout(function ()
+        {
+          // animate the enemy
+          FantasyBrawl.cur_enemy.d_card.animate({ left: "-="+shift }, "fast");
+          FantasyBrawl.cur_enemy.d_card.delay(200).animate({ left: "+="+shift });
+          // make adjustments to the display
+          setTimeout(function ()
+          {
+            FantasyBrawl.cur_hero.d_hitpoints.text(FantasyBrawl.cur_hero.cur_hitpoints);
+            FantasyBrawl.cur_hero.d_progress.val(FantasyBrawl.cur_hero.cur_hitpoints);
+            msg = $('<p class="log">'+FantasyBrawl.cur_enemy.name+' hits '+FantasyBrawl.cur_hero.name+' for '+FantasyBrawl.cur_enemy.counter+'</p>');
+            FantasyBrawl.d_combat_log.prepend(msg);
+          }, 300);
+        }, 900);
       } else {
         // enemy defeated
         this.cur_enemy.d_card.hide();
@@ -154,15 +160,21 @@ var FantasyBrawl =
       }
       console.log(this.cur_hero, this.cur_enemy);
 
-      // test for win/lose
-      if (this.cur_defeated >= (Object.keys(this.combatants).length - 1))
+      // attack cleanup
+      setTimeout(function ()
       {
-        this.end_game("Y O U . W I N !");
-      } else
-      if (this.cur_hero.cur_hitpoints <= 0)
-      {
-        this.end_game("G A M E . O V E R");
-      }
+        // test for win/lose
+        if (FantasyBrawl.cur_defeated >= (Object.keys(FantasyBrawl.combatants).length - 1))
+        {
+          FantasyBrawl.end_game("Y O U . W I N !");
+        } else
+        if (FantasyBrawl.cur_hero.cur_hitpoints <= 0)
+        {
+          FantasyBrawl.end_game("G A M E . O V E R");
+        }
+        // allow the user to attack again
+        FantasyBrawl.attacking = false;
+      }, 1300);
     }
   },
   // method to create the combatant cards
@@ -271,7 +283,7 @@ $(".combatant").on("click", function()
 // Click event for the [Attack] Button
 $("#attack").on("click", function()
 {
-  if (FantasyBrawl.started && FantasyBrawl.have_enemy)
+  if (FantasyBrawl.started && FantasyBrawl.have_enemy && !FantasyBrawl.attacking)
     FantasyBrawl.attack();
   // else throw away the clicks
 });
