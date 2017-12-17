@@ -118,9 +118,8 @@ var FantasyBrawl =
     if (this.started && this.have_enemy)
     {
       console.log(this.cur_hero, this.cur_enemy);
-      // make adjustments to the object
+      // adjust the enemy hitpoints
       this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
-      this.cur_hero.cur_attack += this.cur_hero.attack;
       // animate the hero
       this.cur_hero.d_card.animate({ left: "+="+shift }, "fast");
       this.cur_hero.d_card.delay(200).animate({ left: "-="+shift });
@@ -133,6 +132,8 @@ var FantasyBrawl =
         msg = $('<p class="log">'+FantasyBrawl.cur_hero.name+' hits '+FantasyBrawl.cur_enemy.name+' for '+FantasyBrawl.cur_hero.cur_attack+'</p>');
         FantasyBrawl.d_combat_log.prepend(msg);
       }, 300);
+      // adjust the attack value
+      this.cur_hero.cur_attack += this.cur_hero.attack;
       // check if the enemy is KO'd and hide it or attack with it
       if (this.cur_enemy.cur_hitpoints > 0)
       {
