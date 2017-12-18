@@ -111,6 +111,7 @@ var FantasyBrawl =
   {
     var msg;
     var shift = vw(67); // calculate number of pixels to shift the animation
+    var temp_attack;    // store current attack value for the log message, necessary because of timer
 
     // prevent the user from getting ahead of the game
     this.attacking = true;
@@ -120,6 +121,7 @@ var FantasyBrawl =
       console.log(this.cur_hero, this.cur_enemy);
       // adjust the enemy hitpoints
       this.cur_enemy.cur_hitpoints -= this.cur_hero.cur_attack;
+      temp_attack = this.cur_hero.cur_attack;
       // animate the hero
       this.cur_hero.d_card.animate({ left: "+="+shift }, "fast");
       this.cur_hero.d_card.delay(200).animate({ left: "-="+shift });
@@ -129,7 +131,7 @@ var FantasyBrawl =
         // inside timer functions, cannot use 'this' because JS breaks normal OOP rules and global scope can invade object scope
         FantasyBrawl.cur_enemy.d_hitpoints.text(FantasyBrawl.cur_enemy.cur_hitpoints);
         FantasyBrawl.cur_enemy.d_progress.val(FantasyBrawl.cur_enemy.cur_hitpoints);
-        msg = $('<p class="log">'+FantasyBrawl.cur_hero.name+' hits '+FantasyBrawl.cur_enemy.name+' for '+FantasyBrawl.cur_hero.cur_attack+'</p>');
+        msg = $('<p class="log">'+FantasyBrawl.cur_hero.name+' hits '+FantasyBrawl.cur_enemy.name+' for '+temp_attack+'</p>');
         FantasyBrawl.d_combat_log.prepend(msg);
       }, 300);
       // adjust the attack value
